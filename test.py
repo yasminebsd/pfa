@@ -14,9 +14,9 @@ def binarize(image):
     for i in range(labels_width):
         for j in range(labels_height):
             if image[i,j] >=150:
-                image[i,j] = 1;
+                image[i,j] = 2;
             else:
-                image[i,j] =0;
+                image[i,j] =1;
     return image
 
 img_labels = binarize(img_labels)

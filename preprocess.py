@@ -67,11 +67,11 @@ def prepareData():
     for i in range(image_width):
         for j in range(image_height):
             label = image_labels[i, j]
-            print(i,i,label)
             patch = create_patch(new_image, i, j, PATCH_SIZE)
             if label > 0:
                 nb_samples[label - 1] += 1
                 classes[label - 1].append(patch)
+
 
     displayClassTable(nb_samples)
 

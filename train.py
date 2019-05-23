@@ -14,7 +14,7 @@ def network(layers):
     model.add(Flatten())
     model.add(Dense(6 * layers, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(9, activation='softmax'))
+    model.add(Dense(2, activation='softmax'))
     model.summary()
     return model
 
@@ -26,3 +26,4 @@ if __name__ == '__main__':
     # Train the model
     model.compile(Adam(lr=.0005), loss='categorical_crossentropy', metrics=['accuracy'])
     model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10)
+    
