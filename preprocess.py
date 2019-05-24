@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image, ImageOps
 from scipy.io import loadmat
 
+import settings
 from display_utils import displayClassTable
 from preprocess_utils import normalize, create_patch, one_hot_encoding
 from test import binarize
@@ -11,34 +12,32 @@ from test import binarize
 PATCH_SIZE = 5
 
 
-def prepareData():
-    # filename = './data/PaviaU.mat'
-    # image_dict = loadmat(filename)
-    filename = './data/diff.jpg'
-    img = np.array(Image.open(filename))
+def prepareData(img, image_labels):
 
-
-    # gt_fileName = './data/PaviaU_gt.mat'
-    # gt_image_dict = loadmat(gt_fileName)
-    # img_labels = np.array(gt_image_dict['paviaU_gt'])
-    gt_fileName = './data/cleanchangemap.jpg'
-    im = Image.open((gt_fileName))
-    changedmap = ImageOps.expand(im, border=2)
-    img_labels = np.array(changedmap)
-
-    image_labels = binarize(img_labels)
+    # filename = './data/diff.jpg'
+    # img = np.array(Image.open(filename))
+    #
+    # gt_fileName = './data/cleanchangemap.jpg'
+    # im = Image.open((gt_fileName))
+    # changedmap = ImageOps.expand(im, border=2)
+    # img_labels = np.array(changedmap)
+    #
+    # image_labels = binarize(img_labels)
 
 
     # Etape 0 TODO : name
     image_width = img.shape[0]
     image_height = img.shape[1]
     image_layers = 1
-    # image_layers = img.shape[2]
-    # nb_classes = np.max(img_labels)
     nb_classes = 2
 
     img = img.reshape((image_width,image_height,image_layers))
-    print(img.shape)
+    # print(img.shape)
+
+    print("Dataset = ", settings.dataSetName)
+    print("Taille de l'image = ", image_width, "x", image_height)
+    print("Nombre des layers = ", image_layers)
+    print("Nombre des classes = ", nb_classes)
 
     # Etape 1 : normalisation de l'image
     img = normalize(img)
@@ -46,12 +45,12 @@ def prepareData():
     # Etape 2 : preparation de l'image
     img = np.transpose(img, (2, 0, 1))
     padding_width = int((PATCH_SIZE - 1) / 2)
-    pixel_means = []  # represente la moyenne d'une pixel
+    # pixel_means = []  # represente la moyenne d'une pixel
 
     new_image = []
 
     for i in range(image_layers):
-        pixel_means.append(np.mean(img[i, :, :]))
+        # pixel_means.append(np.mean(img[i, :, :]))
         # ajouter padding de 0 dans les bordeurs
         p = np.pad(img[i, :, :], padding_width, 'constant', constant_values=0)
         new_image.append(p)
@@ -71,7 +70,6 @@ def prepareData():
             if label > 0:
                 nb_samples[label - 1] += 1
                 classes[label - 1].append(patch)
-
 
     displayClassTable(nb_samples)
 
@@ -120,4 +118,4 @@ def prepareData():
     print("+-------------------------------------+")
     print("Etape PreProcessing est termine")
 
-    return x_train, y_train, x_test, y_test
+    return x_train, y_train, x_test, y_test, nb_classes

@@ -1,6 +1,8 @@
+from PIL import Image
 from keras.layers import Dense, Conv2D, Dropout, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
+import numpy as np
 
 from preprocess import prepareData, PATCH_SIZE
 
@@ -19,11 +21,12 @@ def network(layers):
     return model
 
 
-if __name__ == '__main__':
-    X_train, y_train, X_test, y_test = prepareData()
+def train(x_train, y_train, x_test, y_test, nb_classes, epochs):
+    # X_train, y_train, X_test, y_test = prepareData()
     # generate the model
-    model = network(X_train.shape[3])
+    model = network(x_train.shape[3])
     # Train the model
     model.compile(Adam(lr=.0005), loss='categorical_crossentropy', metrics=['accuracy'])
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10)
-    
+    model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=10)
+    return model
+
